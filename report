@@ -1,0 +1,47 @@
+$$FOR FIRST REQUIREMENT:-
+
+	First added the ctime,rtime and etime variable in struct proc in proc.h
+	Then in proc.c initialised the ctime,rtime.etime in allocproc function with value of ticks, 0 and 0 respectively.
+	Update the vaue of etime in exit function.
+	rtime is incremented in trap.c whenever a time interrupt is there for RUNNING processes and for the rest of the processes if they are not in sleeping or zombie state, there wtime is incremented there.
+	waitx is implemented in similar way as wait is implemented in xv6.
+	Added time command.
+
+$$FOR SECOND REQUIREMENT:-
+
+	Added all the required new components in struct proc.
+	Simply looped over the whole table and printed each of the required information.
+
+$$FOR THIRD REQUIREMENT:-
+
+	@FCFS scheduler:-
+		While picking a process in scheduler to run , we will pick the one(runnable) process whose ctime is minimum.
+
+	@PBS scheduler:-
+		Implemented set_priority system call to change priority of a process.
+		Added setPriority command.
+		While picking a process in sheduler to run , we will pick the one(runnable) process whose priority is maximum(numerically least).
+		Added aging by reducing value of priority variable by 1 if it's last executed time exceeds 15 ticks.
+
+	@MLFQ scheduler:-
+		All the thing were done as directed in the assignment pdf.
+		While picking a process in sheduler , we first check is there a runnable process available in 0 queue, if there is none , then we check for the next queue and so on until we find an available runnable process.
+		Added aging by sending the process to higher priority queue if it's last executed time exceeds 300 ticks.
+
+	###COMPARISON BETWEEN WAITING TIME OF 3 SCHEDULERS:-
+		I made a test program which runs 10 child processes in parallel. Now i checked the total waiting time of these 10 child processes in case of all the three processes. My observations were as follows:-
+			1. FCFS = 73711 ticks
+			2. PBS  = 71246 ticks
+			3. MLFQ = 72407 ticks
+			4. RR   = 64796 ticks
+
+		I tested one more program where my first 3 children had large number of operations and rest of the children had just one operation to perform. My observations in that case were as follows:-
+			1. FCFS = 45782 ticks
+			2. PBS  = 6965  ticks
+			3. MLFQ = 4732  ticks
+			4. RR   = 7392  ticks
+		note-Here i gave least priority to the first 3 processes.
+
+	From the above two observations i conclude that, the best algorithm for scheduling is MLFQ as no matter what the situation is, it is never worst among four algorithms that we discussed. There are cases where FCFS gives least waiting time but also there  is a possibility that it gives the worst waiting time also. Same thing can be also said about PBS. Therefore if we judge the algorithms according to their worst scenario then MLFQ comes out to be best one.
+
+NOTE - time command has been implemented. you can use time<space>test to test the waiting time for different scheduler by running 		 test code(benchmark). 
